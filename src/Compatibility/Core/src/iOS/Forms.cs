@@ -15,6 +15,7 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Controls.Platform;
 
 #if __MOBILE__
 using UIKit;
@@ -180,12 +181,6 @@ namespace Microsoft.Maui.Controls.Compatibility
 			if (s_flags.Contains("Profile"))
 				Profile.Enable();
 		}
-
-		public static void Init() =>
-			SetupInit(new MauiContext());
-
-		public static void Init(InitializationOptions options) =>
-			SetupInit(new MauiContext(), options);
 
 		public static void Init(IActivationState activationState, InitializationOptions? options = null) =>
 			SetupInit(activationState.Context, options);

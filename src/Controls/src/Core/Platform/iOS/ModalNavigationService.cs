@@ -8,18 +8,14 @@ using UIKit;
 
 namespace Microsoft.Maui.Controls.Platform
 {
+	 // TODO: MAUI VALIDATE Appearing disappearing
 	class ModalNavigationService : IModalNavigationService
 	{
-		// this is wrong and temporary
-		Page Page => Application.Current.Windows[0].View as Page;
-
 		readonly List<Page> _modals;
-		readonly IMauiContext _mauiContext;
 		bool _appeared = true;
-		public ModalNavigationService(IMauiContext mauiContext)
+		public ModalNavigationService()
 		{
 			_modals = new List<Page>();
-			_mauiContext = mauiContext;
 		}
 
 		// do I really need this anymore?
@@ -55,18 +51,15 @@ namespace Microsoft.Maui.Controls.Platform
 			// Yes?
 			//modal.DisposeModalAndChildRenderers();
 
-			if (!IsModalPresentedFullScreen(modal))
-				Page.GetCurrentPage()?.SendAppearing();
-
 			return modal;
 		}
 
-		public Task PushModalAsync(Page modal)
+		public Task PushModalAsync(Page modal, IMauiContext mauiContext)
 		{
-			return PushModalAsync(modal, true);
+			return PushModalAsync(modal, true, mauiContext);
 		}
 
-		public Task PushModalAsync(Page modal, bool animated)
+		public Task PushModalAsync(Page modal, bool animated, IMauiContext mauiContext)
 		{
 			EndEditing();
 
@@ -74,49 +67,19 @@ namespace Microsoft.Maui.Controls.Platform
 
 			var presentationStyle = elementConfiguration?.On<PlatformConfiguration.iOS>()?.ModalPresentationStyle().ToNativeModalPresentationStyle();
 
-			bool shouldFire = true;
-
-			if (NativeVersion.IsAtLeast(13))
-			{
-				if (presentationStyle == UIKit.UIModalPresentationStyle.FullScreen)
-					shouldFire = false; // This is mainly for backwards compatibility
-			}
-			else
-			{
-				// While the above IsiOS13OrNewer will always be false if __XCODE11__ is true
-				// the UIModalPresentationStyle.Automatic is the only Xcode 11 API
-				// for readability I decided to only take this part out
-				if (presentationStyle == UIKit.UIModalPresentationStyle.Automatic)
-					shouldFire = false;
-
-				if (presentationStyle == UIKit.UIModalPresentationStyle.FullScreen)
-					shouldFire = false; // This is mainly for backwards compatibility
-			}
-
-			if (_appeared && shouldFire)
-				Page.GetCurrentPage()?.SendDisappearing();
-
 			_modals.Add(modal);
 
 			modal.DescendantRemoved += HandleChildRemoved;
 
 			if (_appeared)
-				return PresentModal(modal, animated && animated);
+				return PresentModal(modal, animated && animated, mauiContext);
 
 			return Task.FromResult<object>(null);
 		}
 
-		static bool IsModalPresentedFullScreen(Page modal)
+		async Task PresentModal(Page modal, bool animated, IMauiContext mauiContext)
 		{
-			var elementConfiguration = modal as IElementConfiguration<Page>;
-			var presentationStyle = elementConfiguration?.On<PlatformConfiguration.iOS>()?.ModalPresentationStyle();
-			return presentationStyle != null && presentationStyle == PlatformConfiguration.iOSSpecific.UIModalPresentationStyle.FullScreen;
-		}
-
-		async Task PresentModal(Page modal, bool animated)
-		{
-			var modalRenderer = modal.ToNative(_mauiContext);
-
+			modal.ToNative(mauiContext);
 			var wrapper = new ModalWrapper(modal.Handler as INativeViewHandler);
 
 			if (_modals.Count > 1)
@@ -135,7 +98,7 @@ namespace Microsoft.Maui.Controls.Platform
 			// presentation is complete before it really is. It does not however inform you when it is really done (and thus 
 			// would be safe to dismiss the VC). Fortunately this is almost never an issue
 
-			var _renderer = UIApplication.SharedApplication.GetKeyWindow().RootViewController;
+			var _renderer = mauiContext.Window.RootViewController;
 			await _renderer.PresentViewControllerAsync(wrapper, animated);
 			await Task.Delay(5);
 		}		

@@ -12,8 +12,8 @@ namespace Microsoft.Maui.Controls
 	internal interface IModalNavigationService
 	{
 		IReadOnlyList<Page> ModalStack { get; }
-		Task PushModalAsync(Page page);
-		Task PushModalAsync(Page page, bool animated);
+		Task PushModalAsync(Page page, IMauiContext mauiContext);
+		Task PushModalAsync(Page page, bool animated, IMauiContext mauiContext);
 		Task<Page> PopModalAsync();
 		Task<Page> PopModalAsync(bool animated);
 	}
