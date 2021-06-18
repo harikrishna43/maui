@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Internals;
 using Microsoft.Maui.Graphics;
 
@@ -422,7 +423,13 @@ namespace Microsoft.Maui.Controls
 		}
 
 		void OnModalPushed(Page modalPage)
-			=> ModalPushed?.Invoke(this, new ModalPushedEventArgs(modalPage));
+		{
+			ModalPushed?.Invoke(this, new ModalPushedEventArgs(modalPage));
+			var mauiContext = MainPage.Handler.MauiContext;
+
+			mauiContext.Services.GetService<IModalNavigationService>()
+				.PushModalAsync(modalPage, mauiContext);
+		}
 
 		void OnModalPushing(Page modalPage)
 			=> ModalPushing?.Invoke(this, new ModalPushingEventArgs(modalPage));

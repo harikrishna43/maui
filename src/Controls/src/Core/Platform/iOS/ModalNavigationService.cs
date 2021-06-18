@@ -9,7 +9,7 @@ using UIKit;
 namespace Microsoft.Maui.Controls.Platform
 {
 	 // TODO: MAUI VALIDATE Appearing disappearing
-	class ModalNavigationService : IModalNavigationService
+	internal class ModalNavigationService : IModalNavigationService
 	{
 		readonly List<Page> _modals;
 		bool _appeared = true;

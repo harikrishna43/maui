@@ -104,7 +104,7 @@ namespace Maui.Controls.Sample.Pages
 					Scale = 1.5,
 					Command = new Command(async () =>
 					{
-						await Navigation.PushAsync(new SemanticsPage());
+						await Navigation.PushModalAsync(new SemanticsPage());
 					})
 				}
 			);
@@ -427,8 +427,8 @@ namespace Maui.Controls.Sample.Pages
 			Add(new Image { Source = new FontImageSource { FontFamily = "Dokdo", Glyph = "M" }, BackgroundColor = Color.FromUint(0xFF512BD4), Aspect = Aspect.Center }, row: row, col: 1);
 
 			Add(new Label { Text = "URI", WidthRequest = 150 }, row: (row += 2) - 1, col: 0, colSpan: 2);
-			Add(new Image { Source = "https://raw.githubusercontent.com/dotnet-foundation/swag/05cc70d33fa8c310147b9bd70ae9e103a072cae0/dotnet-bot/dotnet-bot-pot.png" }, row: row, col: 0);
-			Add(new Image { Source = "https://raw.githubusercontent.com/mono/SkiaSharp/6753bfad91dce1894c69084555dab6494efa90eb/samples/Gallery/Shared/Media/animated-heart.gif", IsAnimationPlaying = true }, row: row, col: 1);
+			//Add(new Image { Source = "https://raw.githubusercontent.com/dotnet-foundation/swag/05cc70d33fa8c310147b9bd70ae9e103a072cae0/dotnet-bot/dotnet-bot-pot.png" }, row: row, col: 0);
+			//Add(new Image { Source = "https://raw.githubusercontent.com/mono/SkiaSharp/6753bfad91dce1894c69084555dab6494efa90eb/samples/Gallery/Shared/Media/animated-heart.gif", IsAnimationPlaying = true }, row: row, col: 1);
 
 			Add(new Label { Text = "Stream", WidthRequest = 150 }, row: (row += 2) - 1, col: 0, colSpan: 2);
 			Add(new Image { Source = ImageSource.FromStream(() => GetEmbedded("dotnet_bot.png")) }, row: row, col: 0);

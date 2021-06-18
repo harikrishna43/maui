@@ -35,6 +35,7 @@ using DefaultRenderer = Microsoft.Maui.Controls.Compatibility.Platform.iOS.Platf
 using Microsoft.Maui.Hosting;
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.LifecycleEvents;
+using Microsoft.Maui.Controls.Platform;
 
 namespace Microsoft.Maui.Controls.Hosting
 {
@@ -245,6 +246,12 @@ namespace Microsoft.Maui.Controls.Hosting
 
 #if __IOS__ || MACCATALYST
 					Internals.Registrar.RegisterEffect("Xamarin", "ShadowEffect", typeof(ShadowEffect));
+#endif
+				})
+				.ConfigureServices(services =>
+				{
+#if __IOS__
+					services.AddSingleton<IModalNavigationService>((sp) => new ModalNavigationService());
 #endif
 				})
 				.ConfigureServices<MauiCompatBuilder>();
